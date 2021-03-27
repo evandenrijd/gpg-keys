@@ -1,0 +1,9 @@
+BACKUP_DIR:=/Volumes/backup/gpg-keys
+BACKUP_PUBLIC:=$(BACKUP_DIR)/pgp-public-keys.asc
+BACKUP_PRIVATE:=$(BACKUP_DIR)/pgp-private-keys.asc
+BACKUP_OWNERTRUST:=$(BACKUP_DIR)/pgp-ownertrust.asc
+
+backup:
+	gpg2 --armor --export > $(BACKUP_PUBLIC) && chmod 600 $(BACKUP_PUBLIC)
+	gpg2 --armor --export-secret-keys > $(BACKUP_PRIVATE) && chmod 600 $(BACKUP_PRIVATE)
+	gpg2 --export-ownertrust > $(BACKUP_OWNERTRUST) && chmod 600 $(BACKUP_OWNERTRUST)
