@@ -1,0 +1,14 @@
+* intro
+  + on MacOS create an encrypted volume on dropbox ~/Dropbox/backup.dmg
+    + opening it will create a /Volumes/backup disk
+* move gpg-keys to another computer
+  + make targz will create the backup files and put a gpg-keys.tar.gz file that can be
+    transferred to another machine. Be carefull to disposes of this tar.gz-file after being used.
+  #+begin_example
+    cd ~/vc/projects/gpg-keys && make targz
+    scp gpg-keys.tar.gz paris:~/transfer
+    paris: gpg --import ./pgp-public-keys.asc
+    paris: gpg --import ./pgp-private-keys.asc
+    paris: gpg --import ./pgp-ownertrust.asc
+    paris: gpg --edit-key 6ED3973F passwd # new passwd different from the backup one
+  #+end_example
