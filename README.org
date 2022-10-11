@@ -12,3 +12,11 @@
     paris: gpg --import ./pgp-ownertrust.asc
     paris: gpg --edit-key 6ED3973F passwd # new passwd different from the backup one
   #+end_example
+* add gpg in profile
+  #+begin_example
+    export GPG_TTY=$(tty)
+    if ! pgrep -x "gpg-agent" > /dev/null; then
+        /nix/store/z3vz9f953qqkmhjgjxalgp8c9fn3xcia-gnupg-2.2.13/bin/gpgconf --launch gpg-agent
+    fi
+    export SSH_AUTH_SOCK=$(/nix/store/z3vz9f953qqkmhjgjxalgp8c9fn3xcia-gnupg-2.2.13/bin/gpgconf --list-dirs agent-ssh-socket)
+  #+end_example
