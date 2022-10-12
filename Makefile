@@ -1,3 +1,5 @@
+#First open the secured backup.dmp on Dropbox
+#  this will create the /Volumes/backup/gpg-keys
 BACKUP_DIR:=/Volumes/backup/gpg-keys
 BACKUP_PUBLIC:=$(BACKUP_DIR)/pgp-public-keys.asc
 BACKUP_PRIVATE:=$(BACKUP_DIR)/pgp-private-keys.asc
