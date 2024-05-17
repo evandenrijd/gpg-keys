@@ -1,6 +1,18 @@
 * intro
   + on MacOS create an encrypted volume on dropbox ~/Dropbox/backup.dmg
     + opening it will create a /Volumes/backup disk
+* set expire date and backup
+  + checkout [[file:../../docs/orgs/gpg.org::#gpg_set_expire_date_batch][gpg.org: extend the expiry date in a batch way]]
+    #+name: set the expire date in the future
+    #+begin_src shell
+      gpg2 --quick-set-expire 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F 5y
+      gpg2 --quick-set-expire 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F 5y \*
+      gpg2 --edit-key 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F passwd #set pass gpg-keys/master-backup-dropbox
+      GPG_ID=9DCA05AEE009D545D7CA4D8CC6E698176ED3973F make clean export
+      cp gpg-* /Volumes/backup/gpg-keys
+      gpg2 --edit-key 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F passwd #set pass gpg-keys/master-current
+      GPG_ID=9DCA05AEE009D545D7CA4D8CC6E698176ED3973F make clean export #export to other machines
+    #+end_src
 * move gpg-keys to another computer
   + make all will create the backup files and put a gpg-keys.tar.gz file that can be transferred
     to another machine. Be carefull to disposes of this tar.gz-file after being used with the
@@ -12,24 +24,14 @@
     9DCA05AEE009D545D7CA4D8CC6E698176ED3973F evandenrijd@gmail.com
   #+end_example
   #+begin_example
-    nyc: cd ~/vc/projects/gpg-keys && make all && scp gpg-* paris:~/transfer && make clean
+    nyc: cd ~/vc/projects/gpg-keys && make export && scp gpg-* paris:~/transfer
     paris: gpg --import ./pgp-public-keys.asc
     paris: gpg --import ./pgp-private-keys.asc
-    paris: gpg --import ./pgp-ownertrust.asc
-    paris: gpg --edit-key 6ED3973F passwd # new passwd different from the backup one
+    paris: gpg --import-ownertrust ./pgp-ownertrust.txt
+    paris: gpg -K --with-keygrip  # notice the keygrip of the secret key
+    paris: rm ~/.config/gnupg/private-keys-v1.d/<keygrip>.key
+    paris: gpg -K      # check for "sec#" instead of "sec" only
   #+end_example
-* backup gpg-keys
-  #+name: set the expire date in the future
-  #+begin_src shell
-    gpg2 --quick-set-expire 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F 5y
-    gpg2 --quick-set-expire 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F 5y \*
-    gpg2 --edit-key 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F passwd #set pass gpg-keys/master-backup-dropbox
-    GPG_ID=9DCA05AEE009D545D7CA4D8CC6E698176ED3973F make clean export
-    cp gpg-* /Volumes/backup/gpg-keys
-    gpg2 --edit-key 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F passwd #set pass gpg-keys/master-current
-    GPG_ID=9DCA05AEE009D545D7CA4D8CC6E698176ED3973F make clean export #export to other machines
-  #+end_src
-  + checkout
 * add gpg in profile
   #+begin_example
     export GPG_TTY=$(tty)
