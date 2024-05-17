@@ -5,14 +5,31 @@
   + make all will create the backup files and put a gpg-keys.tar.gz file that can be transferred
     to another machine. Be carefull to disposes of this tar.gz-file after being used with the
     target clean.
+  #+name: first check gpg keys with
   #+begin_example
-    cd ~/vc/projects/gpg-keys && make all
-    scp gpg-keys.tar.gz paris:~/transfer
+    $ gpg2 -K  # FAIR
+    $ gpg2 -K --list-options show-only-fpr-mbox # BETTER: only show you the fingerprint you have the private key of.
+    9DCA05AEE009D545D7CA4D8CC6E698176ED3973F evandenrijd@gmail.com
+  #+end_example
+  #+begin_example
+    nyc: cd ~/vc/projects/gpg-keys && make all && scp gpg-* paris:~/transfer && make clean
     paris: gpg --import ./pgp-public-keys.asc
     paris: gpg --import ./pgp-private-keys.asc
     paris: gpg --import ./pgp-ownertrust.asc
     paris: gpg --edit-key 6ED3973F passwd # new passwd different from the backup one
   #+end_example
+* backup gpg-keys
+  #+name: set the expire date in the future
+  #+begin_src shell
+    gpg2 --quick-set-expire 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F 5y
+    gpg2 --quick-set-expire 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F 5y \*
+    gpg2 --edit-key 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F passwd #set pass gpg-keys/master-backup-dropbox
+    GPG_ID=9DCA05AEE009D545D7CA4D8CC6E698176ED3973F make clean export
+    cp gpg-* /Volumes/backup/gpg-keys
+    gpg2 --edit-key 9DCA05AEE009D545D7CA4D8CC6E698176ED3973F passwd #set pass gpg-keys/master-current
+    GPG_ID=9DCA05AEE009D545D7CA4D8CC6E698176ED3973F make clean export #export to other machines
+  #+end_src
+  + checkout
 * add gpg in profile
   #+begin_example
     export GPG_TTY=$(tty)
